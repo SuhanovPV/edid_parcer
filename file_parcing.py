@@ -1,5 +1,4 @@
 import os
-
 from edid import EDID
 
 
@@ -12,20 +11,14 @@ def get_year(text):
     return text.rstrip()[-5:]
 
 
-def get_resolution(text):
+def get_resolution_param(text):
     res = text.split()
     resolution = dict()
-    resolution['resolution'] = get_short_resolution(res[2])
+    resolution['full_res'] = res[2].replace('i', '')
+    resolution['res_h'], resolution['res_v'] = resolution['full_res'].split('x')
     resolution['scan'] = get_scan(res[2])
     resolution['frequency'] = get_frequency(res[3])
-    resolution['tmds'] = get_tmds(res[8])
-    resolution['is_native'] = is_native(res[-1])
     return resolution
-
-
-def get_short_resolution(res):
-    short = res.split('x')[1]
-    return int(short.replace('i', ''))
 
 
 def get_scan(res):
@@ -38,17 +31,24 @@ def get_scan(res):
 def get_frequency(res):
     return float(res).__round__()
 
-def get_tmds(res):
-    return float(res).__round__()
 
-def is_native(res):
-    return '(native)' == res
+#
+# def get_tmds(res):
+#     return float(res).__round__()
+#
+def get_tmds(text):
+    return text.split()[-2]
 
+
+#
 def parsing(edid_file):
     edid = EDID()
     edid.tv_name = get_tv_name(edid_file)
     with open(edid_file) as file:
         video_block = False
+        ycbcr420_video_data_block = False
+        ycbcr_420_capability_map_data_block = False
+
         for row in file:
             text = row.strip()
             if 'Made in' in text:
@@ -56,29 +56,51 @@ def parsing(edid_file):
             elif 'Video Data Block:' == text:
                 video_block = True
             elif 'VIC' in text and video_block:
-                edid.resolutions.append(get_resolution(text))
-            elif 'Audio Data Block' in text:
+                edid.video_data_block.append(get_resolution_param(text))
+            elif 'YCbCr 4:2:0 Video Data Block' in text:
+                ycbcr420_video_data_block = True
+            elif 'VIC' in text and ycbcr420_video_data_block:
+                edid.YCbCr_420_Video_Data_Block.append(get_resolution_param(text))
+            elif 'YCbCr 4:2:0 Capability Map Data Block' in text:
+                ycbcr_420_capability_map_data_block = True
+            elif 'VIC' in text and ycbcr_420_capability_map_data_block:
+                edid.YCbCr_420_Capability_Map_Data_Block.append(get_resolution_param(text))
+            elif 'Source physical address:' in text:
+                edid.CEC = True
+            elif 'OUI 00-0C-03' in text:
+                edid.hdmi_14.append(True)
+            elif 'OUI C4-5D-D8' in text:
+                edid.hdmi_20.append(True)
+            elif 'Maximum TMDS clock' in text:
+                edid.hdmi_14.append(get_tmds(text))
+            elif 'Maximum TMDS Character Rate' in text:
+                edid.hdmi_20.append(get_tmds(text))
+
+            else:
                 video_block = False
-            elif 'BT2020YCC' in text:
-                edid.bt2020ycc = True
-            elif 'BT2020RGB' in text:
-                edid.bt2020rgb = True
-            elif 'BT2020cYCC' in text:
-                edid.bt2020cycc = True
-            elif 'xvYCC' in text:
-                edid.xvycc = True
-            elif 'HDR10' in text:
-                edid.hdr10 = True
-            elif 'HLG' in text:
-                edid.hlg = True
-            elif 'Supports YCbCr 4:4:4' in text:
-                edid.ycbcr_444 = True
-            elif 'Supports YCbCr 4:2:2' in text:
-                edid.ycbcr_422 = True
-            #TODO Add parcing for DeepColor
-    return edid
+                ycbcr420_video_data_block = False
+                ycbcr_420_capability_map_data_block = False
+        edid.get_calc_parameters()
+
+#             elif 'BT2020YCC' in text:
+#                 edid.bt2020ycc = True
+#             elif 'BT2020RGB' in text:
+#                 edid.bt2020rgb = True
+#             elif 'BT2020cYCC' in text:
+#                 edid.bt2020cycc = True
+#             elif 'xvYCC' in text:
+#                 edid.xvycc = True
+#             elif 'HDR10' in text:
+#                 edid.hdr10 = True
+#             elif 'HLG' in text:
+#                 edid.hlg = True
+
+#             #TODO Add parcing for DeepColor
+#     return edid
 
 
 if __name__ == '__main__':
-    e_file = r'C:\Users\ssuxx\PycharmProjects\edid_parcer\tmp\HISENSE_50U7QF.txt'
-    print(parsing(e_file))
+    e_file = r'D:\python\edid_parcer\tmp\HISENSE_50U7QF.txt'
+    parsing(e_file)
+    e_file = r'D:\python\edid_parcer\tmp\LG_43NANO766QA.txt'
+    parsing(e_file)
