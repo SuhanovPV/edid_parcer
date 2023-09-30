@@ -15,7 +15,6 @@ def get_resolution_param(text):
     res = text.split()
     resolution = dict()
     resolution['full_res'] = res[2].replace('i', '')
-    resolution['res_h'], resolution['res_v'] = resolution['full_res'].split('x')
     resolution['scan'] = get_scan(res[2])
     resolution['frequency'] = get_frequency(res[3])
     return resolution
@@ -31,15 +30,35 @@ def get_scan(res):
 def get_frequency(res):
     return float(res).__round__()
 
+
 def get_tmds(text):
     return text.split()[-2]
 
 
+def get_port(text):
+    phrases = text.split(': ')
+    if len(phrases) > 1:
+        return phrases[1]
+    else:
+        return '-'
+
+
+def get_deep_color_bits(text, need_conversation=False):
+    if text != 'Y444':
+        bit = int(text[:2])
+        if need_conversation:
+            bit = str(int(bit / 3))
+    else:
+        bit = 'Y444'
+    return bit
+
+
 #
 def parsing(edid_file):
-    edid = EDID()
-    edid.tv_name = get_tv_name(edid_file)
     with open(edid_file) as file:
+        edid = EDID()
+        edid.tv_name = get_tv_name(edid_file)
+
         block_1 = False
         video_block = False
         ycbcr420_video_data_block = False
@@ -66,7 +85,7 @@ def parsing(edid_file):
             elif 'DTD' in text and block_1:
                 edid.VSDT_14.append(get_resolution_param(text))
             elif 'Source physical address:' in text:
-                edid.CEC = True
+                edid.CEC = get_port(text)
             elif 'OUI 00-0C-03' in text:
                 edid.hdmi_14.append(True)
             elif 'OUI C4-5D-D8' in text:
@@ -75,32 +94,33 @@ def parsing(edid_file):
                 edid.hdmi_14.append(get_tmds(text))
             elif 'Maximum TMDS Character Rate' in text:
                 edid.hdmi_20.append(get_tmds(text))
-
+            elif 'BT2020YCC' in text:
+                edid.bt2020ycc = True
+            elif 'BT2020RGB' in text:
+                edid.bt2020rgb = True
+            elif 'BT2020cYCC' in text:
+                edid.bt2020cycc = True
+            elif 'xvYCC' in text:
+                edid.xvycc = True
+            elif 'HDR10' in text or "SMPTE ST2084" in text:
+                edid.hdr10 = True
+            elif 'HLG' in text:
+                edid.hlg = True
+            elif 'DC_' in text:
+                edid.dc_444.append(get_deep_color_bits(text.replace('DC_', ''), True))
+            elif 'Deep Color 4:2:0' in text:
+                edid.dc_420.append(get_deep_color_bits(text.replace('Supports ', '')))
             else:
                 video_block = False
                 ycbcr420_video_data_block = False
                 ycbcr_420_capability_map_data_block = False
-        edid.get_calc_parameters()
-
-#             elif 'BT2020YCC' in text:
-#                 edid.bt2020ycc = True
-#             elif 'BT2020RGB' in text:
-#                 edid.bt2020rgb = True
-#             elif 'BT2020cYCC' in text:
-#                 edid.bt2020cycc = True
-#             elif 'xvYCC' in text:
-#                 edid.xvycc = True
-#             elif 'HDR10' in text:
-#                 edid.hdr10 = True
-#             elif 'HLG' in text:
-#                 edid.hlg = True
-
-#             #TODO Add parcing for DeepColor
-#     return edid
+    return edid
 
 
 if __name__ == '__main__':
     e_file = r'D:\python\edid_parcer\tmp\HISENSE_50U7QF.txt'
-    parsing(e_file)
+    print(parsing(e_file))
     e_file = r'D:\python\edid_parcer\tmp\LG_43NANO766QA.txt'
-    parsing(e_file)
+    print(parsing(e_file))
+    e_file = r'D:\python\edid_parcer\tmp\BBK_65LEX-6039UTS2C.txt'
+    print(parsing(e_file))

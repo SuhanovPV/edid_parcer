@@ -2,35 +2,33 @@ class EDID:
     def __init__(self):
         self.tv_name = ''
         self.year = ''
+        self.CEC = ""
+        self.hdmi_20 = []
+        self.hdmi_14 = []
+        self.max_mode = ''
+        self.VSDT_14_4K = False
+        self.bt2020ycc = False
+        self.bt2020rgb = False
+        self.bt2020cycc = False
+        self.xvycc = False
+        self.hdr10 = False
+        self.hlg = False
+        self.dc_444 = []
+        self.dc_420 = []
+
         self.video_data_block = []
         self.YCbCr_420_Video_Data_Block = []
         self.YCbCr_420_Capability_Map_Data_Block = []
         self.VSDT_14 = []
-        self.VSDT_14_4K = False
         self.tv_is_problems = []
-        self.CEC = False
-        self.hdmi_20 = []
-        self.hdmi_14 = []
-        self.max_mode = ''
-        # self.tmds = dict()
-        # self.vsdb_14 = False
-        # self.bt2020ycc = False
-        # self.bt2020rgb = False
-        # self.bt2020cycc = False
-        # self.xvycc = False
-        # self.hdr10 = False
-        # self.hlg = False
-        # self.dc_444 = False
-        # self.dc_420 = False
-        # self.resolutions = []
-        # self.max_resolution = dict()
 
     def get_max_mode(self):
         all_block = self.video_data_block + self.YCbCr_420_Video_Data_Block + self.YCbCr_420_Capability_Map_Data_Block
         video_DB_3840_2160 = list(set(self.find_resolution('3840x2160', 'p', *self.video_data_block)))
-        YCbCr_420_Video_DB_3840_2160 = list(set(self.find_resolution('3840x2160', 'p', *self.YCbCr_420_Video_Data_Block)))
+        YCbCr_420_Video_DB_3840_2160 = list(
+            set(self.find_resolution('3840x2160', 'p', *self.YCbCr_420_Video_Data_Block)))
         YCbCr_420_Capability_Map_DB_3840_2160 = list(set(self.find_resolution('3840x2160', 'p',
-                                                                     *self.YCbCr_420_Capability_Map_Data_Block)))
+                                                                              *self.YCbCr_420_Capability_Map_Data_Block)))
 
         if not video_DB_3840_2160 and not YCbCr_420_Video_DB_3840_2160 and not \
                 YCbCr_420_Capability_Map_DB_3840_2160 and self.find_resolution('4096x2160', 'p', all_block):
@@ -77,10 +75,7 @@ class EDID:
 
     def get_calc_parameters(self):
         self.max_mode = self.get_max_mode()
-        print('='*8)
-        for key in self.__dict__:
-            print(key + ': ' + str(self.__dict__[key]))
 
     def __str__(self):
         self.get_calc_parameters()
-        return
+        return ''
