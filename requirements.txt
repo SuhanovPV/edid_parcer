@@ -1,0 +1,3 @@
+# for libs installation use command
+# pip install -r requirements.txt
+xlwt==1.3.0
