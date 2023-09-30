@@ -80,7 +80,6 @@ def parsing(edid_file):
                 video_block = False
                 ycbcr420_video_data_block = False
                 ycbcr_420_capability_map_data_block = False
-        print(edid.VSDT_14)
         edid.get_calc_parameters()
 
 #             elif 'BT2020YCC' in text:

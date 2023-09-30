@@ -8,7 +8,6 @@ class EDID:
         self.VSDT_14 = []
         self.VSDT_14_4K = False
         self.tv_is_problems = []
-        self.type = ''
         self.CEC = False
         self.hdmi_20 = []
         self.hdmi_14 = []
@@ -28,10 +27,10 @@ class EDID:
 
     def get_max_mode(self):
         all_block = self.video_data_block + self.YCbCr_420_Video_Data_Block + self.YCbCr_420_Capability_Map_Data_Block
-        video_DB_3840_2160 = self.find_resolution('3840x2160', 'p', *self.video_data_block)
-        YCbCr_420_Video_DB_3840_2160 = self.find_resolution('3840x2160', 'p', *self.YCbCr_420_Video_Data_Block)
-        YCbCr_420_Capability_Map_DB_3840_2160 = self.find_resolution('3840x2160', 'p',
-                                                                     *self.YCbCr_420_Capability_Map_Data_Block)
+        video_DB_3840_2160 = list(set(self.find_resolution('3840x2160', 'p', *self.video_data_block)))
+        YCbCr_420_Video_DB_3840_2160 = list(set(self.find_resolution('3840x2160', 'p', *self.YCbCr_420_Video_Data_Block)))
+        YCbCr_420_Capability_Map_DB_3840_2160 = list(set(self.find_resolution('3840x2160', 'p',
+                                                                     *self.YCbCr_420_Capability_Map_Data_Block)))
 
         if not video_DB_3840_2160 and not YCbCr_420_Video_DB_3840_2160 and not \
                 YCbCr_420_Capability_Map_DB_3840_2160 and self.find_resolution('4096x2160', 'p', all_block):
@@ -57,9 +56,11 @@ class EDID:
 
         vsdb_4K = self.find_resolution('3840x2160', *self.VSDT_14)
         if not vsdb_4K and self.find_resolution('4096x2160', 'p', *self.VSDT_14):
+            self.VSDT_14_4K = True
             self.tv_is_problems.append('4096xVSDB')
             return '4096xVSDB'
         if vsdb_4K:
+            self.VSDT_14_4K = True
             return f'2160p{",".join(vsdb_4K)}HzVSDB'
 
         video_DB_1080p = self.find_resolution('1920x1080', 'p', *self.video_data_block)
@@ -74,19 +75,11 @@ class EDID:
     def find_resolution(self, resolution, scan, *list_resolution):
         return sorted([x['frequency'] for x in list_resolution if x['full_res'] == resolution and x['scan'] == scan])
 
-    # def get_hdmi_version(self):
-    #     if self.max_resolution['resolution'] == 4320:
-    #         self.hdmi_version = '2.1'
-    #     elif self.max_resolution['resolution'] == 2160 and self.max_resolution['frequency'] > 30:
-    #         self.hdmi_version = '2.0'
-    #     else:
-    #         self.hdmi_version = '1.4'
-    #
-    # def is_deep_color(self):
-    #     return self.dc_420 or self.dc_444
-
     def get_calc_parameters(self):
         self.max_mode = self.get_max_mode()
+        print('='*8)
+        for key in self.__dict__:
+            print(key + ': ' + str(self.__dict__[key]))
 
     def __str__(self):
         self.get_calc_parameters()
