@@ -31,11 +31,6 @@ def get_scan(res):
 def get_frequency(res):
     return float(res).__round__()
 
-
-#
-# def get_tmds(res):
-#     return float(res).__round__()
-#
 def get_tmds(text):
     return text.split()[-2]
 
@@ -45,6 +40,7 @@ def parsing(edid_file):
     edid = EDID()
     edid.tv_name = get_tv_name(edid_file)
     with open(edid_file) as file:
+        block_1 = False
         video_block = False
         ycbcr420_video_data_block = False
         ycbcr_420_capability_map_data_block = False
@@ -65,6 +61,10 @@ def parsing(edid_file):
                 ycbcr_420_capability_map_data_block = True
             elif 'VIC' in text and ycbcr_420_capability_map_data_block:
                 edid.YCbCr_420_Capability_Map_Data_Block.append(get_resolution_param(text))
+            elif 'Block 1' in text:
+                block_1 = True
+            elif 'DTD' in text and block_1:
+                edid.VSDT_14.append(get_resolution_param(text))
             elif 'Source physical address:' in text:
                 edid.CEC = True
             elif 'OUI 00-0C-03' in text:
@@ -80,6 +80,7 @@ def parsing(edid_file):
                 video_block = False
                 ycbcr420_video_data_block = False
                 ycbcr_420_capability_map_data_block = False
+        print(edid.VSDT_14)
         edid.get_calc_parameters()
 
 #             elif 'BT2020YCC' in text:
