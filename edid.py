@@ -32,7 +32,7 @@ class EDID:
                                                                               *self.YCbCr_420_Capability_Map_Data_Block)))
 
         if not video_DB_3840_2160 and not YCbCr_420_Video_DB_3840_2160 and not \
-                YCbCr_420_Capability_Map_DB_3840_2160 and self.find_resolution('4096x2160', 'p', all_block):
+                YCbCr_420_Capability_Map_DB_3840_2160 and self.find_resolution('4096x2160', 'p', *all_block):
             self.tv_problems.append('4096x')
             return '4096x'
 
@@ -82,8 +82,7 @@ class EDID:
         if len(self.hdmi_20) == 0 and self.max_mode.startswith('1080'):
             return '-'
         else:
-            self.tv_problems.append('no Vendor-Specific Data Block OUI "OUI C4-5D-D8"')
-            return '(*r)'
+            return 'default'
 
     def get_hdmi_14_value(self):
         if len(self.hdmi_14) == 2:

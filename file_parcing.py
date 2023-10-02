@@ -120,7 +120,7 @@ def parsing(edid_file):
 if __name__ == '__main__':
     e_file = r'D:\python\edid_parcer\tmp\HISENSE_50U7QF.txt'
     print(parsing(e_file))
-    e_file = r'D:\python\edid_parcer\tmp\LG_43NANO766QA.txt'
+    e_file = r'D:\python\edid_parcer\tmp\ACER_AT2230.txt'
     print(parsing(e_file))
     e_file = r'D:\python\edid_parcer\tmp\BBK_65LEX-6039UTS2C.txt'
     print(parsing(e_file))

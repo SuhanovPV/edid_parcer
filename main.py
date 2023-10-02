@@ -18,7 +18,7 @@ def edid_file_parsing(file_name):
 def get_files_from_dir(file_path):
     for edid_file in os.listdir(file_path):
         if edid_file.endswith('.txt'):
-            edid_files_list.append(os.path.abspath(edid_file))
+            edid_files_list.append(os.path.join(file_path, edid_file))
 
 
 def get_folder():
@@ -40,7 +40,7 @@ def generate_xlsx_file_name(dir_path):
     return os.path.join(dir_path, name)
 
 
-def write_to_ecxell(edid, row, sheet):
+def write_to_ecxel(edid, row, sheet):
     col = 0
     for data in edid:
         sheet.write(row, col, data)
@@ -52,12 +52,10 @@ if __name__ == '__main__':
     if path:
         book = xlwt.Workbook(encoding="utf-8")
         sheet = book.add_sheet("EDID")
-        write_to_ecxell(TITLES, 0, sheet)
+        write_to_ecxel(TITLES, 0, sheet)
         row = 1
-        # TODO add cycle
-        write_to_ecxell('', row, sheet)
-
+        for file in edid_files_list:
+            edid_data = edid_file_parsing(file)
+            write_to_ecxel(edid_data.get_result(), row, sheet)
+            row += 1
         book.save(generate_xlsx_file_name(path))
-        # for file in edid_files_list:
-        #     edid_data = edid_file_parsing(file)
-        #     write_to_ecxell(edid_data)
