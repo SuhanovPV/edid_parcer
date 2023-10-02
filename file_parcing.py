@@ -66,7 +66,7 @@ def parsing(edid_file):
 
         for row in file:
             text = row.strip()
-            if 'Made in' in text:
+            if 'Made in' in text or 'Model year' in text:
                 edid.year = get_year(text)
             elif 'Video Data Block:' == text:
                 video_block = True
