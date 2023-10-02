@@ -120,4 +120,7 @@ class EDID:
         return result
 
     def __str__(self):
-        return '-'
+        TITLES = ['Название ТВ', 'Год', 'CEC', 'Тип', 'HDMI 2.0', 'HDMI 1.4', 'Max. mode', 'VSDB 1.4 4K', 'BT2020YCC',
+                  'HDR', 'HLG', 'DeepColor 4:4:4', 'DeepColor 4:2:0', 'Other', 'Проблемный ТВ']
+        result = self.get_result()
+        return '\n'.join([f'{tup[0]}: {tup[1]}' for tup in zip(TITLES, result)])
