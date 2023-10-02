@@ -51,7 +51,7 @@ class EDID:
             return f'2160p{",".join([str(x) for x in freq if x >= 50])}Hz444,420'
 
         if max(video_DB_3840_2160, default=0) != 0 and max(video_DB_3840_2160, default=0) < 50:
-            return f'2160p{",".join(video_DB_3840_2160)}Hz'
+            return f'2160p{",".join(str(x) for x in video_DB_3840_2160)}Hz'
 
         vsdb_4K = self.find_resolution('3840x2160','p', *self.VSDB_14)
         if not vsdb_4K and self.find_resolution('4096x2160', 'p', *self.VSDB_14):

@@ -55,10 +55,12 @@ if __name__ == '__main__':
         write_to_ecxel(TITLES, 0, sheet)
         row = 1
         for file in edid_files_list:
+
             edid_data = edid_file_parsing(file)
             if isinstance(edid_data, str):
                 write_to_ecxel(['Empty file', file], row, sheet)
             else:
+                print(file)
                 write_to_ecxel(edid_data.get_result(), row, sheet)
             row += 1
         book.save(generate_xlsx_file_name(path))
