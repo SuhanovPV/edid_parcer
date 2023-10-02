@@ -47,10 +47,10 @@ def get_deep_color_bits(text, need_conversation=False):
     if text != 'Y444':
         bit = int(text[:2])
         if need_conversation:
-            bit = str(int(bit / 3))
+            bit = int(bit / 3)
     else:
         bit = 'Y444'
-    return bit
+    return str(bit)
 
 
 #
@@ -83,7 +83,7 @@ def parsing(edid_file):
             elif 'Block 1' in text:
                 block_1 = True
             elif 'DTD' in text and block_1:
-                edid.VSDT_14.append(get_resolution_param(text))
+                edid.VSDB_14.append(get_resolution_param(text))
             elif 'Source physical address:' in text:
                 edid.CEC = get_port(text)
             elif 'OUI 00-0C-03' in text:
@@ -97,11 +97,11 @@ def parsing(edid_file):
             elif 'BT2020YCC' in text:
                 edid.bt2020ycc = True
             elif 'BT2020RGB' in text:
-                edid.bt2020rgb = True
+                edid.bt2020rgb = 'BT2020RGB'
             elif 'BT2020cYCC' in text:
-                edid.bt2020cycc = True
+                edid.bt2020cycc = 'BT2020cYCC'
             elif 'xvYCC' in text:
-                edid.xvycc = True
+                edid.xvycc = 'xvYCC'
             elif 'HDR10' in text or "SMPTE ST2084" in text:
                 edid.hdr10 = True
             elif 'HLG' in text:
