@@ -63,6 +63,7 @@ def parsing(edid_file):
         video_block = False
         ycbcr420_video_data_block = False
         ycbcr_420_capability_map_data_block = False
+        is_VSDB_BLOCK = False
 
         for row in file:
             text = row.strip()
@@ -73,22 +74,24 @@ def parsing(edid_file):
             elif 'VIC' in text and video_block:
                 edid.video_data_block.append(get_resolution_param(text))
             elif 'YCbCr 4:2:0 Video Data Block' in text:
+                is_VSDB_BLOCK = False
                 ycbcr420_video_data_block = True
             elif 'VIC' in text and ycbcr420_video_data_block:
                 edid.YCbCr_420_Video_Data_Block.append(get_resolution_param(text))
             elif 'YCbCr 4:2:0 Capability Map Data Block' in text:
+                is_VSDB_BLOCK = False
                 ycbcr_420_capability_map_data_block = True
             elif 'VIC' in text and ycbcr_420_capability_map_data_block:
                 edid.YCbCr_420_Capability_Map_Data_Block.append(get_resolution_param(text))
-            elif 'Block 1' in text:
-                block_1 = True
-            elif 'DTD' in text and block_1:
-                edid.VSDB_14.append(get_resolution_param(text))
+            elif 'HDMI VIC ' in text and is_VSDB_BLOCK:
+                edid.VSDB_14.append(get_resolution_param(text.replace('HDMI ', '')))
             elif 'Source physical address:' in text:
                 edid.CEC = get_port(text)
             elif 'OUI 00-0C-03' in text:
+                is_VSDB_BLOCK = True
                 edid.hdmi_14.append(True)
             elif 'OUI C4-5D-D8' in text:
+                is_VSDB_BLOCK = False
                 edid.hdmi_20.append(True)
             elif 'Maximum TMDS clock' in text:
                 edid.hdmi_14.append(get_tmds(text))
@@ -118,6 +121,6 @@ def parsing(edid_file):
 
 
 if __name__ == '__main__':
-    e_file = r'D:\python\edid_parcer\tmp\HISENSE_50U7QF.txt'
+    e_file = r'D:\python\edid_parcer\tmp\JVC_LT32M580.txt'
     print(parsing(e_file))
 

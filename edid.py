@@ -53,20 +53,21 @@ class EDID:
         if max(video_DB_3840_2160, default=0) != 0 and max(video_DB_3840_2160, default=0) < 50:
             return f'2160p{",".join(str(x) for x in video_DB_3840_2160)}Hz'
 
-        vsdb_4K = self.find_resolution('3840x2160','p', *self.VSDB_14)
+        vsdb_4K = self.find_resolution('3840x2160', 'p', *self.VSDB_14)
         if not vsdb_4K and self.find_resolution('4096x2160', 'p', *self.VSDB_14):
             self.VSDB_14_4K = True
             self.tv_problems.append('4096xVSDB')
             return '4096xVSDB'
         if vsdb_4K:
             self.VSDB_14_4K = True
-            return f'2160p{",".join(vsdb_4K)}HzVSDB'
+            self.tv_problems.append('3840xVSDB')
+            return f'2160p{",".join([str(x) for x in vsdb_4K])}HzVSDB'
 
         video_DB_1080p = self.find_resolution('1920x1080', 'p', *self.video_data_block)
         if max(video_DB_1080p, default=0) >= 50:
             return f'1080p{",".join([str(x) for x in video_DB_1080p if x >= 50])}Hz'
         if max(video_DB_1080p, default=0) > 0:
-            return f'1080p{",".join([str(x) for x in video_DB_1080p if x >= 50])}Hz'
+            return f'1080p{",".join([str(x) for x in video_DB_1080p])}Hz'
 
         video_DB_1080i = self.find_resolution('1920x1080', 'i', *self.video_data_block)
         return f'1080p{",".join([str(x) for x in video_DB_1080i])}Hz'

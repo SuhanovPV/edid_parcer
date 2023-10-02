@@ -58,7 +58,7 @@ if __name__ == '__main__':
 
             edid_data = edid_file_parsing(file)
             if isinstance(edid_data, str):
-                write_to_ecxel(['Empty file', file], row, sheet)
+                write_to_ecxel([os.path.split(file)[1], 'no edid'], row, sheet)
             else:
                 write_to_ecxel(edid_data.get_result(), row, sheet)
             row += 1
