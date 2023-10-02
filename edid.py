@@ -53,7 +53,7 @@ class EDID:
         if max(video_DB_3840_2160, default=0) != 0 and max(video_DB_3840_2160, default=0) < 50:
             return f'2160p{",".join(video_DB_3840_2160)}Hz'
 
-        vsdb_4K = self.find_resolution('3840x2160', *self.VSDB_14)
+        vsdb_4K = self.find_resolution('3840x2160','p', *self.VSDB_14)
         if not vsdb_4K and self.find_resolution('4096x2160', 'p', *self.VSDB_14):
             self.VSDB_14_4K = True
             self.tv_problems.append('4096xVSDB')
@@ -120,4 +120,4 @@ class EDID:
         return result
 
     def __str__(self):
-        return '\t'.join(self.get_result())
+        return '-'
