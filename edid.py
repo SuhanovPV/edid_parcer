@@ -88,7 +88,7 @@ class EDID:
 
     def get_hdmi_14_value(self):
         if len(self.hdmi_14) == 2:
-            return f'{self.hdmi_14[1]}MHz'
+            return f'{self.hdmi_14[1]} MHz'
         if len(self.hdmi_14) == 1:
             return 'No TMDS',
         if len(self.hdmi_14) == 0:
