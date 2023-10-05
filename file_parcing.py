@@ -105,8 +105,8 @@ def parsing(edid_file):
                 edid.bt2020cycc = 'BT2020cYCC'
             elif 'xvYCC' in text:
                 edid.xvycc = 'xvYCC'
-            elif 'HDR10' in text:
-                edid.hdr10 = 'HDR10'
+            elif 'HDR10+' in text:
+                edid.hdr10 = 'HDR10+'
             elif 'Hybrid Log-Gamma' in text:
                 edid.hlg = 'HLG'
             elif "SMPTE ST2084" in text:

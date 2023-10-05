@@ -112,8 +112,8 @@ class EDID:
                   self.max_mode,
                   self.convwert_boolt_to_symbol(self.VSDB_14_4K),
                   self.convwert_boolt_to_symbol(self.bt2020ycc),
-                  self.hdr10,
                   ', '.join([a for a in [self.hlg, self.st] if a != '']),
+                  self.hdr10,
                   ','.join(self.dc_444),
                   ','.join(self.dc_420),
                   ', '.join([x for x in [self.bt2020rgb, self.bt2020cycc, self.xvycc] if x != '']),
@@ -123,6 +123,6 @@ class EDID:
 
     def __str__(self):
         TITLES = ['Название ТВ', 'Год', 'CEC', 'Тип', 'HDMI 2.0', 'HDMI 1.4', 'Max. mode', 'VSDB 1.4 4K', 'BT2020YCC',
-                  'HDR', 'HLG', 'DeepColor 4:4:4', 'DeepColor 4:2:0', 'Other', 'Проблемный ТВ']
+                  'HDR (ST/HLG)', 'HDR10+', 'DeepColor 4:4:4', 'DeepColor 4:2:0', 'Other', 'Проблемный ТВ']
         result = self.get_result()
         return '\n'.join([f'{tup[0]}: {tup[1]}' for tup in zip(TITLES, result)])

@@ -4,8 +4,8 @@ import file_parcing
 import datetime
 import xlwt
 
-TITLES = ['Название ТВ', 'Год', 'CEC', 'Тип', 'HDMI 2.0', 'HDMI 1.4', 'Max. mode', 'VSDB 1.4 4K', 'BT2020YCC', 'HDR',
-          'HLG', 'DeepColor 4:4:4', 'DeepColor 4:2:0', 'Other', 'Проблемный ТВ']
+TITLES = ['Название ТВ', 'Год', 'CEC', 'Тип', 'HDMI 2.0', 'HDMI 1.4', 'Max. mode', 'VSDB 1.4 4K', 'BT2020YCC',  'HDR (ST/HLG)',
+           'HDR10+', 'DeepColor 4:4:4', 'DeepColor 4:2:0', 'Other', 'Проблемный ТВ']
 edid_files_list = []
 
 
