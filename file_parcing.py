@@ -105,10 +105,12 @@ def parsing(edid_file):
                 edid.bt2020cycc = 'BT2020cYCC'
             elif 'xvYCC' in text:
                 edid.xvycc = 'xvYCC'
-            elif 'HDR10' in text or "SMPTE ST2084" in text:
-                edid.hdr10 = True
-            elif 'HLG' in text:
-                edid.hlg = True
+            elif 'HDR10' in text:
+                edid.hdr10 = 'HDR10'
+            elif 'Hybrid Log-Gamma' in text:
+                edid.hlg = 'HLG'
+            elif "SMPTE ST2084" in text:
+                edid.st = 'ST2084'
             elif 'DC_' in text:
                 edid.dc_444.append(get_deep_color_bits(text.replace('DC_', ''), True))
             elif 'Deep Color 4:2:0' in text:

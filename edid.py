@@ -12,8 +12,9 @@ class EDID:
         self.bt2020rgb = ''
         self.bt2020cycc = ''
         self.xvycc = ''
-        self.hdr10 = False
-        self.hlg = False
+        self.hdr10 = ''
+        self.hlg = ''
+        self.st = ''
         self.dc_444 = []
         self.dc_420 = []
 
@@ -111,8 +112,9 @@ class EDID:
                   self.max_mode,
                   self.convwert_boolt_to_symbol(self.VSDB_14_4K),
                   self.convwert_boolt_to_symbol(self.bt2020ycc),
-                  self.convwert_boolt_to_symbol(self.hdr10),
-                  self.convwert_boolt_to_symbol(self.hlg),
+                  self.hdr10,
+                  self.hlg,
+                  self.st,
                   ','.join(self.dc_444),
                   ','.join(self.dc_420),
                   ', '.join([x for x in [self.bt2020rgb, self.bt2020cycc, self.xvycc] if x != '']),
